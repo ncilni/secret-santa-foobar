@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
+const nodemailer = require("nodemailer");
 
 var CONTACTS_COLLECTION = "contacts";
 
@@ -14,6 +15,24 @@ app.use(express.static(distDir));
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
+
+// Creating the Gmail transporter
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: false,
+  requireTLS: true,
+  auth: {
+    user: "secret.santa.foobar@gmail.com",
+    pass: "Karuna@1912",
+  },
+});
+
+let mailOptions = {
+  from: "secret.santa.foobar@gmail.com",
+  to: "ncilni@gmail.com",
+  subject: "Testing",
+  text: "hi! this is a test email",
+};
 
 // Connect to the database before starting the application server.
 mongodb.MongoClient.connect(
@@ -75,6 +94,13 @@ app.post("/api/contacts", function (req, res) {
       if (err) {
         handleError(res, err.message, "Failed to create new contact.");
       } else {
+        transporter.sendMail(mailOptions, (err, data) => {
+          if (err) {
+            console.log("error occurred", err);
+          } else {
+            console.log("Email sent!");
+          }
+        });
         res.status(201).json(doc.ops[0]);
       }
     });
