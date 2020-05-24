@@ -27,13 +27,6 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-let mailOptions = {
-  from: "secret.santa.foobar@gmail.com",
-  to: "ncilni@gmail.com",
-  subject: "Testing",
-  text: "hi! this is a test email",
-};
-
 // Connect to the database before starting the application server.
 mongodb.MongoClient.connect(
   process.env.MONGODB_URI || "mongodb://localhost:27017/test",
@@ -94,6 +87,12 @@ app.post("/api/contacts", function (req, res) {
       if (err) {
         handleError(res, err.message, "Failed to create new contact.");
       } else {
+        let mailOptions = {
+          from: "secret.santa.foobar@gmail.com",
+          to: newContact.email,
+          subject: "Welcome!",
+          text: `Hi ${newContact.name}! Welcome to Secret Santa`,
+        };
         transporter.sendMail(mailOptions, (err, data) => {
           if (err) {
             console.log("error occurred", err);
