@@ -2,10 +2,12 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const Joi = require("joi");
 
 // Importing nconf Configs and logger
 var config = require("./utils/configuration");
 var appLogger = require("./utils/appLogger");
+var errorHandler = require("./utils/errorHandler");
 
 // Importing email templates
 const emailTemplates = require("./utils/email-sender/emailTemplates");
@@ -46,6 +48,10 @@ mongoose
 
 // Load Contact model
 const Contact = require("./models/Contact");
+
+// importing validation model
+const createActivitySchema = require("./validations/createActivity");
+
 // creating express app
 var app = express();
 app.use(bodyParser.json());
@@ -74,80 +80,55 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({ error: message });
 }
 
-app.post("/api/sendmail", function (req, res) {
-  //   let mailSendingOptions = req.body;
-  mailSendingOptions = {
-    inviter: {
-      name: "Neeraj Chauhan",
-      email: "ncilni@gmail.com",
-    },
-    invitationMessage:
-      "You are invited to take part in the game of Secret Santa. Let's spread the cheer around this Holiday Season! You are Secret Santa for:",
-    invitees: [
-      {
-        name: "Karuna Sethi",
-        email: "ncilni@gmail.com",
-        assigned: {
-          name: "Shireen Sethi",
-          email: "shireensethi10@gmail.com",
-        },
-      },
-      {
-        name: "Shireen Sethi",
-        email: "shireensethi10@gmail.com",
-        assigned: {
-          name: "Anu Sethi",
-          email: "luckysaggi66@gmail.com",
-        },
-      },
-      {
-        name: "Anu Sethi",
-        email: "luckysaggi66@gmail.com",
-        assigned: {
-          name: "Karuna Sethi",
-          email: "sethikaruna5@gmail.com",
-        },
-      },
-    ],
-  };
-  let erroredInvitees = [];
-  mailSendingOptions.invitees.forEach((invitee) => {
-    let mailTemplate = emailTemplates.template.replace(
-      /inviteeName/g,
-      `Hi ${invitee.name}! You have been nominated by ${mailSendingOptions.inviter.name}`
-    );
-    mailTemplate = mailTemplate.replace(
-      /invitationMessage/g,
-      mailSendingOptions.invitationMessage
-    );
-    mailTemplate = mailTemplate.replace(/assignee/g, invitee.assigned.name);
-    let mailOptions = {
-      from: "secret.santa.foobar@gmail.com",
-      to: invitee.email,
-      subject: `HO HO HO! ${invitee.name}!!`,
-      html: mailTemplate,
-      attachments: emailTemplates.assets,
-    };
-    transporter.sendMail(mailOptions, (err, data) => {
-      if (err) {
-        console.log("error occurred", err);
-        erroredInvitees.push(invitee);
-      } else {
-        console.log("Email sent!");
-      }
-    });
-  });
-  if (erroredInvitees.length > 0) {
-    res.json({
-      status: "error",
-      success: false,
-      errorFields: erroredInvitees,
-    });
+app.post("/api/activity/organize", function (req, res) {
+  let secretSantaActivity = req.body;
+  const validation = Joi.validate(secretSantaActivity, createActivitySchema);
+  if (validation.error) {
+    errorHandler.handle(400, validation.error, null, req, res);
   } else {
-    res.json({
-      status: "sent",
-      success: true,
-      errorFields: erroredInvitees,
+    let erroredInvitees = [];
+    secretSantaActivity.invitees.forEach((invitee, index) => {
+      let mailTemplate = emailTemplates.template.replace(
+        /inviteeName/g,
+        `Hi ${invitee.name}! You have been nominated by ${secretSantaActivity.inviter.name}`
+      );
+      mailTemplate = mailTemplate.replace(
+        /invitationMessage/g,
+        secretSantaActivity.invitationMessage
+      );
+      mailTemplate = mailTemplate.replace(/assignee/g, invitee.assigned.name);
+      let mailOptions = {
+        from: "secret.santa.foobar@gmail.com",
+        to: invitee.email,
+        subject: `HO HO HO! ${invitee.name}!!`,
+        html: mailTemplate,
+        attachments: emailTemplates.assets,
+      };
+      transporter.sendMail(mailOptions, (err, data) => {
+        if (err) {
+          erroredInvitees.push(invitee);
+        }
+        if (index === secretSantaActivity.invitees.length - 1) {
+          if (erroredInvitees.length > 0) {
+            appLogger.logger[logOption.toString()](
+              `Email sending error || Invited by: ${secretSantaActivity.inviter.name}<${secretSantaActivity.inviter.email}> || errored invitees: ${erroredInvitees}`
+            );
+            res.json({
+              status: "error",
+              success: false,
+              errorInvites: erroredInvitees,
+            });
+          } else {
+            appLogger.logger[logOption.toString()](
+              `Email sent successfully || Invited by: ${secretSantaActivity.inviter.name}<${secretSantaActivity.inviter.email}>`
+            );
+            res.json({
+              status: "sent",
+              success: true,
+            });
+          }
+        }
+      });
     });
   }
 });
