@@ -1,0 +1,17 @@
+{
+  "databaseSettings": {
+    "host": "ds149382.mlab.com",
+    "port": "49382",
+    "username": "heroku_hvksz0dw",
+    "password": "pvevoe657f9k9htg5frkf1165k",
+    "database": "heroku_hvksz0dw",
+    "dialect": "mongodb://"
+  },
+  "log": {
+    "logOption": "info"
+  },
+  "sender-email": {
+    "user": "neeraj.chauhan@intelegencia.com",
+    "pass": "intel@2448"
+  }
+}
