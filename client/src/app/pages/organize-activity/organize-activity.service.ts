@@ -5,7 +5,7 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class OrganizeActivityService {
-  private activityUrl = `/activity/organize`;
+  private activityUrl = `/api/activity/organize`;
 
   constructor(private http: HttpClient) {}
 
