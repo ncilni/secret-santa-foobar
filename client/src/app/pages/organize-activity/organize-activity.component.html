@@ -179,7 +179,7 @@
             </div>
           </div>
           <app-invite-list [inviteeList]="inviteeList"></app-invite-list>
-          <div class="field-error" *ngIf="submitted && !checkInvitee()">
+          <div class="field-error" *ngIf="showInvalidInvitees">
             You need to invite atleast 2 people!
           </div>
           <button class="button text-uppercase" (click)="sendInvites()">

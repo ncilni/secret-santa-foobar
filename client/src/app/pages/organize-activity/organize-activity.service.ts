@@ -11,6 +11,7 @@ export class OrganizeActivityService {
   constructor(private http: HttpClient) {}
 
   organizeEvent(eventData) {
+    console.log(eventData);
     return this.http.post(this.activityUrl, eventData);
   }
 }

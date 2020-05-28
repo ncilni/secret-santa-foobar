@@ -1,6 +1,7 @@
 import { OrganizeActivityService } from "./organize-activity.service";
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { injectRootLimpMode } from "@angular/core/src/di/injector_compatibility";
 
 @Component({
   selector: "app-organize-activity",
@@ -12,30 +13,36 @@ export class OrganizeActivityComponent implements OnInit {
     email: "",
     name: "",
   };
-  inviteeList = [
+  inviteeList: any = [
     {
       email: "",
       name: "",
+      assigned: {},
     },
     {
       email: "",
       name: "",
+      assigned: {},
     },
     {
       email: "",
       name: "",
+      assigned: {},
     },
     {
       email: "",
       name: "",
+      assigned: {},
     },
     {
       email: "",
       name: "",
+      assigned: {},
     },
   ];
   invitationForm: FormGroup;
   submitted = false;
+  showInvalidInvitees: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -50,7 +57,7 @@ export class OrganizeActivityComponent implements OnInit {
           Validators.compose([
             Validators.required,
             Validators.pattern(
-              /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _,&:'"@()-]*$/g
+              /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _,&:'."\n@()-]*$/
             ),
           ]),
         ],
@@ -66,7 +73,7 @@ export class OrganizeActivityComponent implements OnInit {
           Validators.minLength(10),
           Validators.maxLength(1000),
           Validators.pattern(
-            /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _,&:'"@()-]*$/g
+            /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _,&:'."\n@()-]*$/
           ),
         ]),
       ],
@@ -74,7 +81,6 @@ export class OrganizeActivityComponent implements OnInit {
   }
 
   addInvitee(newInvitee) {
-    console.log(newInvitee);
     let inviteeIndex = this.inviteeList.findIndex(
       (invitee) => invitee.email === "" && invitee.name === ""
     );
@@ -84,23 +90,28 @@ export class OrganizeActivityComponent implements OnInit {
       this.inviteeList[inviteeIndex] = newInvitee;
     }
   }
-  checkInvitee() {
-    return !!(
-      this.inviteeList.filter((invitee) => {
-        invitee.email !== "";
-      }).length > 2
-    );
-  }
 
   sendInvites() {
     this.submitted = false;
-
-    if (this.invitationForm.valid && this.checkInvitee()) {
-      this.activityService
-        .organizeEvent(this.invitationForm.value)
-        .subscribe((res) => {
-          console.log("response");
-        });
+    let actualList = this.inviteeList.filter((invitee) => invitee.email !== "");
+    actualList.forEach(
+      (item) =>
+        (item.assigned = {
+          name: "Karuna Sethi",
+          email: "ncilni@gmail.com",
+        })
+    );
+    if (this.invitationForm.valid) {
+      if (actualList.length >= 2) {
+        this.showInvalidInvitees = false;
+        this.activityService
+          .organizeEvent({ ...this.invitationForm.value, invitees: actualList })
+          .subscribe((res) => {
+            console.log("response");
+          });
+      } else {
+        this.showInvalidInvitees = true;
+      }
     } else {
       this.submitted = true;
     }
