@@ -2,7 +2,6 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-const Joi = require("joi");
 
 // Importing nconf Configs and logger
 var config = require("./utils/configuration");
@@ -82,7 +81,7 @@ function handleError(res, reason, message, code) {
 
 app.post("/api/activity/organize", function (req, res) {
   let secretSantaActivity = req.body;
-  const validation = Joi.validate(secretSantaActivity, createActivitySchema);
+  const validation = createActivitySchema.validate(secretSantaActivity);
   if (validation.error) {
     errorHandler.handle(400, validation.error, null, req, res);
   } else {
