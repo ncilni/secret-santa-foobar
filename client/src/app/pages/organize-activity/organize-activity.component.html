@@ -1,0 +1,192 @@
+<section
+  class="section hot-offer"
+  id="our-hot-offer"
+  style="background-image: url('../../../assets/images/banner-2.png');"
+>
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-sm-12 mt-5">
+        <div class="hot-offer__column">
+          <h2 class="section__heading text-uppercase">
+            Let's Invite your friends!
+          </h2>
+          <p>
+            Just enter the names and emails of the people you want to invite and
+            sit back. We will randomly assign a secret santa to each participant
+            and send them an email.
+          </p>
+          <form [formGroup]="invitationForm">
+            <ng-container formGroupName="inviter">
+              <div class="row side-pads">
+                <div class="form-group col-sm-2">
+                  <label>Your Name:</label>
+                </div>
+                <div class="form-group col-sm-10">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    formControlName="name"
+                    placeholder="Full name"
+                    [ngClass]="{
+                      'input-errored':
+                        submitted &&
+                        invitationForm.get('inviter').get('name').invalid
+                    }"
+                  />
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm
+                      .get('inviter')
+                      .get('name')
+                      .hasError('required')
+                  "
+                >
+                  Name is a required field
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm
+                      .get('inviter')
+                      .get('name')
+                      .hasError('pattern')
+                  "
+                >
+                  Name contains invalid special characters.
+                </div>
+              </div>
+              <div class="row side-pads">
+                <div class="form-group col-sm-2">
+                  <label>Your Email:</label>
+                </div>
+                <div class="form-group col-sm-10">
+                  <input
+                    type="email"
+                    class="form-control"
+                    formControlName="email"
+                    id="email"
+                    placeholder="Email"
+                    [ngClass]="{
+                      'input-errored':
+                        submitted &&
+                        invitationForm.get('inviter').get('email').invalid
+                    }"
+                  />
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm
+                      .get('inviter')
+                      .get('email')
+                      .hasError('required')
+                  "
+                >
+                  Email is a required field
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm.get('inviter').get('email').hasError('email')
+                  "
+                >
+                  This is not a valid email address
+                </div>
+              </div>
+            </ng-container>
+
+            <div class="row side-pads">
+              <div
+                class="form-group col-sm-12"
+                style="text-align: left !important; padding-left: 25px;"
+              >
+                <label>Your invitation message:</label>
+              </div>
+              <div class="form-group col-sm-12">
+                <textarea
+                  type="text"
+                  class="form-control"
+                  style="min-height: 100px;"
+                  formControlName="invitationMessage"
+                  [ngClass]="{
+                    'input-errored':
+                      submitted &&
+                      invitationForm.get('invitationMessage').invalid
+                  }"
+                  placeholder="Write a nice message inviting your friends."
+                ></textarea>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm.get('invitationMessage').hasError('required')
+                  "
+                >
+                  Please add an invitation message
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm
+                      .get('invitationMessage')
+                      .hasError('minlength')
+                  "
+                >
+                  This message is too short
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm
+                      .get('invitationMessage')
+                      .hasError('maxlength')
+                  "
+                >
+                  This message is too long
+                </div>
+                <div
+                  class="field-error"
+                  *ngIf="
+                    submitted &&
+                    invitationForm.get('invitationMessage').hasError('pattern')
+                  "
+                >
+                  This message contains invalid special characters.
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="row">
+            <div class="col-sm-12 text-center vert-pads">
+              <label>Add Invitees</label>
+            </div>
+          </div>
+          <app-add-invitee
+            (inviteeAdded)="addInvitee($event)"
+          ></app-add-invitee>
+          <div class="row">
+            <div class="col-sm-12 text-center vert-pads">
+              <label>Your Invitees</label>
+            </div>
+          </div>
+          <app-invite-list [inviteeList]="inviteeList"></app-invite-list>
+          <div class="field-error" *ngIf="showInvalidInvitees">
+            You need to invite atleast 2 people!
+          </div>
+          <button class="button text-uppercase" (click)="sendInvites()">
+            Send Invites
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
