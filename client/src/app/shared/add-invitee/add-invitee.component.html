@@ -1,0 +1,64 @@
+<div class="row side-pads">
+  <form [formGroup]="newInviteeForm">
+    <div
+      class="col-lg-5 col-md-5 col-sm-12 form-group"
+      style="padding: 5px !important;"
+    >
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Full name"
+        formControlName="name"
+        style="padding: 5px !important;"
+        [ngClass]="{
+          'input-errored':
+            submitted && newInviteeForm.get('name').hasError('required')
+        }"
+      />
+      <div
+        class="field-error"
+        *ngIf="submitted && newInviteeForm.get('name').hasError('required')"
+      >
+        Name is a required field
+      </div>
+    </div>
+    <div
+      class="col-lg-7 col-md-7 col-sm-12 form-group"
+      style="padding: 5px !important;"
+    >
+      <div class="input-group">
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Email"
+          formControlName="email"
+          [ngClass]="{
+            'input-errored': submitted && newInviteeForm.get('email').invalid
+          }"
+        />
+        <span class="input-group-btn">
+          <button
+            class="btn btn-warning"
+            style="border-radius: 0 40px 40px 0;"
+            type="button"
+            (click)="addInvitee()"
+          >
+            Add
+          </button>
+        </span>
+      </div>
+      <div
+        class="field-error"
+        *ngIf="submitted && newInviteeForm.get('email').hasError('required')"
+      >
+        Email is a required field
+      </div>
+      <div
+        class="field-error"
+        *ngIf="submitted && newInviteeForm.get('email').hasError('email')"
+      >
+        Not a valid email
+      </div>
+    </div>
+  </form>
+</div>
