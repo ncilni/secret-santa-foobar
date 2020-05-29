@@ -1,7 +1,7 @@
 import { OrganizeActivityService } from "./organize-activity.service";
 import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { injectRootLimpMode } from "@angular/core/src/di/injector_compatibility";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-organize-activity",
@@ -46,7 +46,8 @@ export class OrganizeActivityComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private activityService: OrganizeActivityService
+    private activityService: OrganizeActivityService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -104,16 +105,38 @@ export class OrganizeActivityComponent implements OnInit {
     if (this.invitationForm.valid) {
       if (actualList.length >= 2) {
         this.showInvalidInvitees = false;
+        this.invitationForm.reset();
         this.activityService
           .organizeEvent({ ...this.invitationForm.value, invitees: actualList })
-          .subscribe((res) => {
-            console.log("response");
-          });
+          .subscribe(
+            (res: any) => {
+              console.log("response");
+              if (res.success) {
+                this.showSuccess("We have an invite to your Invitees!");
+              } else {
+                this.showFailure(
+                  "There was an error while sending your invites! Please try later."
+                );
+              }
+            },
+            (err) =>
+              this.showFailure(
+                "There was an error while sending your invites! Please try later."
+              )
+          );
       } else {
         this.showInvalidInvitees = true;
       }
     } else {
       this.submitted = true;
     }
+  }
+
+  showSuccess(message: string) {
+    this.toastr.success(message, "Success");
+  }
+
+  showFailure(message: string) {
+    this.toastr.error(message, "Error");
   }
 }

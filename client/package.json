@@ -15,7 +15,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~7.2.0",
+    "@angular/animations": "^7.2.16",
     "@angular/cli": "^7.3.10",
     "@angular/common": "~7.2.0",
     "@angular/compiler": "~7.2.0",
@@ -32,6 +32,7 @@
     "mongodb": "^3.5.7",
     "mongoose": "^5.9.15",
     "nconf": "^0.10.0",
+    "ngx-toastr": "10.1.0",
     "nodemailer": "^6.4.6",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
