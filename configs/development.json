@@ -10,8 +10,8 @@
   "log": {
     "logOption": "info"
   },
-  "sender-email": {
-    "user": "neeraj.chauhan@intelegencia.com",
-    "pass": "intel@2448"
+  "gmail": {
+    "username": "secret.santa.foobar@gmail.com",
+    "password": "Karuna@1912"
   }
 }
