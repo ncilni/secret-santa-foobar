@@ -49,14 +49,107 @@ app.use(bodyParser.json());
 var distDir = __dirname + "/dist/";
 app.use(express.static(distDir));
 
-/*  "/api/sendmail"
- *    POST: sends an email to the nominated person
- */
+// Creating the Gmail transporter
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: false,
+  requireTLS: true,
+  auth: {
+    user: "secret.santa.foobar@gmail.com",
+    pass: "Karuna@1912",
+  },
+});
+
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
   res.status(code || 500).json({ error: message });
 }
+/*  "/api/activity/organize"
+ *    POST: sends an email to the nominated person
+ */
+app.post("/api/activity/organize", function (req, res) {
+  let secretSantaActivity = req.body;
+  const validation = createActivitySchema.validate(secretSantaActivity);
+  if (validation.error) {
+    errorHandler.handle(400, validation.error, null, req, res);
+  } else {
+    let erroredInvitees = [];
+    assignRandomSanta(secretSantaActivity)
+      .then((assignedList) => {
+        assignedList.invitees.forEach((invitee, index) => {
+          let mailTemplate = emailTemplates.template.replace(
+            /inviteeName/g,
+            `Hi ${invitee.name}! You have been nominated by ${assignedList.inviter.name}`
+          );
+          mailTemplate = mailTemplate.replace(
+            /invitationMessage/g,
+            assignedList.invitationMessage
+          );
+          mailTemplate = mailTemplate.replace(
+            /assignee/g,
+            invitee.assigned.name
+          );
+          let mailOptions = {
+            from: "secret.santa.foobar@gmail.com",
+            to: invitee.email,
+            subject: `HO HO HO! ${invitee.name}!!`,
+            html: mailTemplate,
+            attachments: emailTemplates.assets,
+          };
+          transporter.sendMail(mailOptions, (err, data) => {
+            if (err) {
+              erroredInvitees.push(invitee);
+            }
+            if (index === assignedList.invitees.length - 1) {
+              if (erroredInvitees.length > 0) {
+                appLogger.logger[logOption.toString()](
+                  `Email sending error || Invited by: ${assignedList.inviter.name}<${assignedList.inviter.email}> || errored invitees: ${erroredInvitees}`
+                );
+                res.json({
+                  status: "error",
+                  success: false,
+                  errorInvites: erroredInvitees,
+                });
+              } else {
+                appLogger.logger[logOption.toString()](
+                  `Email sent successfully || Invited by: ${assignedList.inviter.name}<${assignedList.inviter.email}>`
+                );
+                res.json({
+                  status: "sent",
+                  success: true,
+                  assignedList: assignedList,
+                });
+              }
+            }
+          });
+        });
+      })
+      .catch((err) => res.status(500).send(err));
+  }
+});
 
-//  Connect all our routes to our application
-app.use("/api", routes);
+// Function to randomly assigning a sanata to each participant
+function assignRandomSanta(inviteeList) {
+  return new Promise((resolve, reject) => {
+    inviteeList.invitees.forEach((invitee, index) => {
+      let inviteeAssigned = false;
+      while (!inviteeAssigned) {
+        let randomIndex = Math.floor(
+          Math.random() * inviteeList.invitees.length
+        );
+        if (
+          !inviteeList.invitees[randomIndex].assigned &&
+          randomIndex !== index
+        ) {
+          inviteeList.invitees[randomIndex].assigned = {
+            name: invitee.name,
+            email: invitee.email,
+          };
+          inviteeAssigned = true;
+        }
+      }
+    });
+    resolve(inviteeList);
+  });
+}

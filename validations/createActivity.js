@@ -14,10 +14,6 @@ const createActivitySchema = Joi.object()
       Joi.object().keys({
         name: Joi.string().min(2).max(40).required(),
         email: Joi.string().email().required(),
-        assigned: Joi.object().keys({
-          name: Joi.string().min(2).max(40).required(),
-          email: Joi.string().email().required(),
-        }),
       })
     ),
   });
