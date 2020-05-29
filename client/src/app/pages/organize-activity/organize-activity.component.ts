@@ -95,13 +95,6 @@ export class OrganizeActivityComponent implements OnInit {
   sendInvites() {
     this.submitted = false;
     let actualList = this.inviteeList.filter((invitee) => invitee.email !== "");
-    actualList.forEach(
-      (item) =>
-        (item.assigned = {
-          name: "Karuna Sethi",
-          email: "ncilni@gmail.com",
-        })
-    );
     if (this.invitationForm.valid) {
       if (actualList.length >= 2) {
         this.showInvalidInvitees = false;

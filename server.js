@@ -70,15 +70,14 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-/*  "/api/sendmail"
- *    POST: sends an email to the nominated person
- */
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
   res.status(code || 500).json({ error: message });
 }
-
+/*  "/api/activity/organize"
+ *    POST: sends an email to the nominated person
+ */
 app.post("/api/activity/organize", function (req, res) {
   let secretSantaActivity = req.body;
   const validation = createActivitySchema.validate(secretSantaActivity);
@@ -86,67 +85,81 @@ app.post("/api/activity/organize", function (req, res) {
     errorHandler.handle(400, validation.error, null, req, res);
   } else {
     let erroredInvitees = [];
-    secretSantaActivity.invitees.forEach((invitee, index) => {
-      let mailTemplate = emailTemplates.template.replace(
-        /inviteeName/g,
-        `Hi ${invitee.name}! You have been nominated by ${secretSantaActivity.inviter.name}`
-      );
-      mailTemplate = mailTemplate.replace(
-        /invitationMessage/g,
-        secretSantaActivity.invitationMessage
-      );
-      mailTemplate = mailTemplate.replace(/assignee/g, invitee.assigned.name);
-      let mailOptions = {
-        from: "secret.santa.foobar@gmail.com",
-        to: invitee.email,
-        subject: `HO HO HO! ${invitee.name}!!`,
-        html: mailTemplate,
-        attachments: emailTemplates.assets,
-      };
-      transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-          erroredInvitees.push(invitee);
-        }
-        if (index === secretSantaActivity.invitees.length - 1) {
-          if (erroredInvitees.length > 0) {
-            appLogger.logger[logOption.toString()](
-              `Email sending error || Invited by: ${secretSantaActivity.inviter.name}<${secretSantaActivity.inviter.email}> || errored invitees: ${erroredInvitees}`
-            );
-            res.json({
-              status: "error",
-              success: false,
-              errorInvites: erroredInvitees,
-            });
-          } else {
-            appLogger.logger[logOption.toString()](
-              `Email sent successfully || Invited by: ${secretSantaActivity.inviter.name}<${secretSantaActivity.inviter.email}>`
-            );
-            res.json({
-              status: "sent",
-              success: true,
-            });
-          }
-        }
-      });
-    });
+    assignRandomSanta(secretSantaActivity)
+      .then((assignedList) => {
+        assignedList.invitees.forEach((invitee, index) => {
+          let mailTemplate = emailTemplates.template.replace(
+            /inviteeName/g,
+            `Hi ${invitee.name}! You have been nominated by ${assignedList.inviter.name}`
+          );
+          mailTemplate = mailTemplate.replace(
+            /invitationMessage/g,
+            assignedList.invitationMessage
+          );
+          mailTemplate = mailTemplate.replace(
+            /assignee/g,
+            invitee.assigned.name
+          );
+          let mailOptions = {
+            from: "secret.santa.foobar@gmail.com",
+            to: invitee.email,
+            subject: `HO HO HO! ${invitee.name}!!`,
+            html: mailTemplate,
+            attachments: emailTemplates.assets,
+          };
+          transporter.sendMail(mailOptions, (err, data) => {
+            if (err) {
+              erroredInvitees.push(invitee);
+            }
+            if (index === assignedList.invitees.length - 1) {
+              if (erroredInvitees.length > 0) {
+                appLogger.logger[logOption.toString()](
+                  `Email sending error || Invited by: ${assignedList.inviter.name}<${assignedList.inviter.email}> || errored invitees: ${erroredInvitees}`
+                );
+                res.json({
+                  status: "error",
+                  success: false,
+                  errorInvites: erroredInvitees,
+                });
+              } else {
+                appLogger.logger[logOption.toString()](
+                  `Email sent successfully || Invited by: ${assignedList.inviter.name}<${assignedList.inviter.email}>`
+                );
+                res.json({
+                  status: "sent",
+                  success: true,
+                  assignedList: assignedList,
+                });
+              }
+            }
+          });
+        });
+      })
+      .catch((err) => res.status(500).send(err));
   }
 });
 
-/*  "/api/contacts"
- *    GET: finds all contacts
- *    POST: creates a new contact
- */
-
-app.get("/api/contacts", function (req, res) {
-  Contact.find({}, function (err, contacts) {
-    if (err) {
-      errorHandler.handle(500, "Database Error", err, req, res);
-    } else {
-      if (contacts) {
-        res.status(200).json(contacts);
-      } else {
-        handleError(res, err.message, "Failed to get contacts.");
+// Function to randomly assigning a sanata to each participant
+function assignRandomSanta(inviteeList) {
+  return new Promise((resolve, reject) => {
+    inviteeList.invitees.forEach((invitee, index) => {
+      let inviteeAssigned = false;
+      while (!inviteeAssigned) {
+        let randomIndex = Math.floor(
+          Math.random() * inviteeList.invitees.length
+        );
+        if (
+          !inviteeList.invitees[randomIndex].assigned &&
+          randomIndex !== index
+        ) {
+          inviteeList.invitees[randomIndex].assigned = {
+            name: invitee.name,
+            email: invitee.email,
+          };
+          inviteeAssigned = true;
+        }
       }
-    }
+    });
+    resolve(inviteeList);
   });
-});
+}
