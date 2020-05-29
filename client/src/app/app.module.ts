@@ -12,6 +12,8 @@ import { HomeComponent } from "./pages/home/home.component";
 import { OrganizeActivityComponent } from "./pages/organize-activity/organize-activity.component";
 import { InviteListComponent } from "./shared/invite-list/invite-list.component";
 import { AddInviteeComponent } from "./shared/add-invitee/add-invitee.component";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ToastrModule } from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { AddInviteeComponent } from "./shared/add-invitee/add-invitee.component"
     FormsModule,
     ReactiveFormsModule,
     ParticlesModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],
