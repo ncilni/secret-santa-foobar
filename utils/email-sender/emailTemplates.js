@@ -3,32 +3,32 @@ module.exports = {
   assets: [
     {
       filename: "images/secret-santa.jpg",
-      path: "./email-assets/images/secret-santa.jpg",
+      path: "../../email-assets/images/secret-santa.jpg",
       cid: "Img62x",
     },
     {
       filename: "images/banner-1.png",
-      path: "./email-assets/images/banner-1.png",
+      path: "../../email-assets/images/banner-1.png",
       cid: "footer",
     },
     {
       filename: "images/facebook2x.png",
-      path: "./email-assets/images/facebook2x.png",
+      path: "../../email-assets/images/facebook2x.png",
       cid: "facebook2x",
     },
     {
       filename: "images/twitter2x.png",
-      path: "./email-assets/images/twitter2x.png",
+      path: "../../email-assets/images/twitter2x.png",
       cid: "twitter2x",
     },
     {
       filename: "images/instagram2x.png",
-      path: "./email-assets/images/instagram2x.png",
+      path: "../../email-assets/images/instagram2x.png",
       cid: "instagram2x",
     },
     {
       filename: "images/linkedin2x.png",
-      path: "./email-assets/images/linkedin2x.png",
+      path: "../../email-assets/images/linkedin2x.png",
       cid: "linkedin2x",
     },
   ],
