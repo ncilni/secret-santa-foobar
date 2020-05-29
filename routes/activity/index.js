@@ -1,6 +1,6 @@
-const users = require("express").Router();
+const activity = require("express").Router();
 const organize = require("./organize");
 
-users.use("/organize", organize);
+activity.use("/organize", organize);
 
 module.exports = activity;
