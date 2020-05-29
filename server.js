@@ -7,6 +7,7 @@ const nodemailer = require("nodemailer");
 var config = require("./utils/configuration");
 var appLogger = require("./utils/appLogger");
 var errorHandler = require("./utils/errorHandler");
+const routes = require("./routes");
 
 // Importing email templates
 const emailTemplates = require("./utils/email-sender/emailTemplates");
@@ -79,6 +80,9 @@ function handleError(res, reason, message, code) {
   res.status(code || 500).json({ error: message });
 }
 
+//  Connect all our routes to our application
+app.use("/api", routes);
+
 app.post("/api/activity/organize", function (req, res) {
   let secretSantaActivity = req.body;
   const validation = createActivitySchema.validate(secretSantaActivity);
@@ -130,23 +134,4 @@ app.post("/api/activity/organize", function (req, res) {
       });
     });
   }
-});
-
-/*  "/api/contacts"
- *    GET: finds all contacts
- *    POST: creates a new contact
- */
-
-app.get("/api/contacts", function (req, res) {
-  Contact.find({}, function (err, contacts) {
-    if (err) {
-      errorHandler.handle(500, "Database Error", err, req, res);
-    } else {
-      if (contacts) {
-        res.status(200).json(contacts);
-      } else {
-        handleError(res, err.message, "Failed to get contacts.");
-      }
-    }
-  });
 });
