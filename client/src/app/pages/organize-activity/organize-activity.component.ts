@@ -13,33 +13,7 @@ export class OrganizeActivityComponent implements OnInit {
     email: "",
     name: "",
   };
-  inviteeList: any = [
-    {
-      email: "",
-      name: "",
-      assigned: {},
-    },
-    {
-      email: "",
-      name: "",
-      assigned: {},
-    },
-    {
-      email: "",
-      name: "",
-      assigned: {},
-    },
-    {
-      email: "",
-      name: "",
-      assigned: {},
-    },
-    {
-      email: "",
-      name: "",
-      assigned: {},
-    },
-  ];
+  inviteeList: any;
   invitationForm: FormGroup;
   submitted = false;
   showInvalidInvitees: boolean;
@@ -52,6 +26,7 @@ export class OrganizeActivityComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initializeInviteeList();
     this.invitationForm = this.fb.group({
       inviter: this.fb.group({
         name: [
@@ -107,21 +82,23 @@ export class OrganizeActivityComponent implements OnInit {
             (res: any) => {
               if (res.success) {
                 this.showSuccess("We have an invite to your Invitees!");
-                this.invitationForm.reset();
               } else {
                 this.showFailure(
                   "There was an error while sending your invites! Please try later."
                 );
-                this.invitationForm.reset();
               }
+              this.requestPending = false;
+              this.invitationForm.reset();
+              this.initializeInviteeList();
             },
             (err) => {
+              this.requestPending = false;
+              this.invitationForm.reset();
+              this.initializeInviteeList();
               this.showFailure(
                 "There was an error while sending your invites! Please try later."
               );
-              this.invitationForm.reset();
-            },
-            () => (this.requestPending = false)
+            }
           );
       } else {
         this.showInvalidInvitees = true;
@@ -137,5 +114,35 @@ export class OrganizeActivityComponent implements OnInit {
 
   showFailure(message: string) {
     this.toastr.error(message, "Error");
+  }
+
+  initializeInviteeList() {
+    this.inviteeList = [
+      {
+        email: "",
+        name: "",
+        assigned: {},
+      },
+      {
+        email: "",
+        name: "",
+        assigned: {},
+      },
+      {
+        email: "",
+        name: "",
+        assigned: {},
+      },
+      {
+        email: "",
+        name: "",
+        assigned: {},
+      },
+      {
+        email: "",
+        name: "",
+        assigned: {},
+      },
+    ];
   }
 }
