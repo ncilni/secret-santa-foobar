@@ -1,27 +1,47 @@
-# FoobarSecretSanta
+# Secret Santa
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
+http://secretsanta.herokuapp.com
 
-## Development server
+Secret Santa is a web app that makes it easy to organize a round of Secret Santa for a list of participants.
+An organizer can enter a list of participants with name and email address. You can also enter a happy message for everyone to read.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+The system will assign each person in the pool of participants a secret other person from the list who should receive a small Christmas gift.
+Once the assignments are generated and emails are sent that include the happy message and the name of the individual random recipient.
 
-## Code scaffolding
+## Architecture
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Secret Santa is a Full-Stack Javascript application, built with the following frameworks/libraries:
+UI Framework: Angular 7
+CSS framework: Bootstrap
+Backend: Mode.js & Express.js
+Database: MongoDB
 
-## Build
+## Architecture resoning
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+This appliation is built with the MEAN stack. Following are some of the reasons to work with this stack:
 
-## Running unit tests
+1. It’s Entirely JavaScript
+2. Known for its Flexibility and Efficiency
+3. Advantage of Having JSON
+4. Scales excellently
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Development instructions
 
-## Running end-to-end tests
+To run the backend server:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```bash
+npm install # installs all the dependencies for the backend server application
+node server.js # runs the express server
+```
 
-## Further help
+To run the frontend application:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```bash
+cd client # change directory to the client application
+npm install # installs all the dependencies for the angular application
+ng serve # runs the angular application
+```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

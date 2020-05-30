@@ -182,7 +182,11 @@
           <div class="field-error" *ngIf="showInvalidInvitees">
             You need to invite atleast 2 people!
           </div>
-          <button class="button text-uppercase" (click)="sendInvites()">
+          <button
+            class="button text-uppercase"
+            (click)="sendInvites()"
+            [disabled]="requestPending"
+          >
             Send Invites
           </button>
         </div>
