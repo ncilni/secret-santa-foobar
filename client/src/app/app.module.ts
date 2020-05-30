@@ -6,8 +6,6 @@ import { ParticlesModule } from "angular-particle";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { ContactDetailsComponent } from "./contacts/contact-details/contact-details.component";
-import { ContactListComponent } from "./contacts/contact-list/contact-list.component";
 import { HomeComponent } from "./pages/home/home.component";
 import { OrganizeActivityComponent } from "./pages/organize-activity/organize-activity.component";
 import { InviteListComponent } from "./shared/invite-list/invite-list.component";
@@ -18,8 +16,6 @@ import { ToastrModule } from "ngx-toastr";
 @NgModule({
   declarations: [
     AppComponent,
-    ContactDetailsComponent,
-    ContactListComponent,
     HomeComponent,
     OrganizeActivityComponent,
     InviteListComponent,
