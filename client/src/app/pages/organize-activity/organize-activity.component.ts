@@ -95,10 +95,10 @@ export class OrganizeActivityComponent implements OnInit {
   sendInvites() {
     this.submitted = false;
     let actualList = this.inviteeList.filter((invitee) => invitee.email !== "");
+    actualList.push(this.invitationForm.get("inviter").value);
     if (this.invitationForm.valid) {
       if (actualList.length >= 2) {
         this.showInvalidInvitees = false;
-        this.invitationForm.reset();
         this.activityService
           .organizeEvent({ ...this.invitationForm.value, invitees: actualList })
           .subscribe(
@@ -106,16 +106,20 @@ export class OrganizeActivityComponent implements OnInit {
               console.log("response");
               if (res.success) {
                 this.showSuccess("We have an invite to your Invitees!");
+                this.invitationForm.reset();
               } else {
                 this.showFailure(
                   "There was an error while sending your invites! Please try later."
                 );
+                this.invitationForm.reset();
               }
             },
-            (err) =>
+            (err) => {
               this.showFailure(
                 "There was an error while sending your invites! Please try later."
-              )
+              );
+              this.invitationForm.reset();
+            }
           );
       } else {
         this.showInvalidInvitees = true;
