@@ -74,8 +74,8 @@ let primaryTransporter = nodemailer.createTransport({
 // Getting Mailgun authentication
 const auth = {
   auth: {
-    api_key: process.env.MAILGUN_API_KEY || config.get("mailgun:api_key"),
-    domain: process.env.MAILGUN_DOMAIN || config.get("mailgun:domain"),
+    api_key: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
   },
 };
 // Creating the Mailgun transporter

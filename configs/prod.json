@@ -13,9 +13,5 @@
   "gmail": {
     "username": "secret.santa.foobar@gmail.com",
     "password": "Karuna@1912"
-  },
-  "mailgun": {
-    "domain": "sandbox613170197c6c4c12a27868127ebb98d9.mailgun.org",
-    "api_key": "f25f9a9ddbc4d3663ff4b7254cba24a4-e5e67e3e-c367974b"
   }
 }
