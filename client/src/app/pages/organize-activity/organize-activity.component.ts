@@ -43,6 +43,7 @@ export class OrganizeActivityComponent implements OnInit {
   invitationForm: FormGroup;
   submitted = false;
   showInvalidInvitees: boolean;
+  requestPending = false;
 
   constructor(
     private fb: FormBuilder,
@@ -99,11 +100,11 @@ export class OrganizeActivityComponent implements OnInit {
     if (this.invitationForm.valid) {
       if (actualList.length >= 2) {
         this.showInvalidInvitees = false;
+        this.requestPending = true;
         this.activityService
           .organizeEvent({ ...this.invitationForm.value, invitees: actualList })
           .subscribe(
             (res: any) => {
-              console.log("response");
               if (res.success) {
                 this.showSuccess("We have an invite to your Invitees!");
                 this.invitationForm.reset();
@@ -119,7 +120,8 @@ export class OrganizeActivityComponent implements OnInit {
                 "There was an error while sending your invites! Please try later."
               );
               this.invitationForm.reset();
-            }
+            },
+            () => (this.requestPending = false)
           );
       } else {
         this.showInvalidInvitees = true;
