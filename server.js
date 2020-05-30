@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const mg = require("nodemailer-mailgun-transport");
 
 // Importing nconf Configs and logger
 var config = require("./utils/configuration");
@@ -60,15 +61,25 @@ var distDir = __dirname + "/dist/";
 app.use(express.static(distDir));
 
 // Creating the Gmail transporter
-let transporter = nodemailer.createTransport({
+let primaryTransporter = nodemailer.createTransport({
   service: "gmail",
   secure: false,
   requireTLS: true,
   auth: {
-    user: "secret.santa.foobar@gmail.com",
-    pass: "Karuna@1912",
+    user: process.env.GMAIL_USER || config.get("gmail:username"),
+    pass: process.env.GMAIL_PASSWORD || config.get("gmail:password"),
   },
 });
+
+// Getting Mailgun authentication
+const auth = {
+  auth: {
+    api_key: process.env.MAILGUN_API_KEY || config.get("mailgun:api_key"),
+    domain: process.env.MAILGUN_DOMAIN || config.get("mailgun:domain"),
+  },
+};
+// Creating the Mailgun transporter
+let secondaryTransporter = nodemailer.createTransport(mg(auth));
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
@@ -107,9 +118,19 @@ app.post("/api/activity/organize", function (req, res) {
             html: mailTemplate,
             attachments: emailTemplates.assets,
           };
-          transporter.sendMail(mailOptions, (err, data) => {
+          primaryTransporter.sendMail(mailOptions, (err, data) => {
             if (err) {
               erroredInvitees.push(invitee);
+              secondaryTransporter.sendMail(mailOptions, (err, data) => {
+                if (err) {
+                  console.log("error occur#B01C1C", err);
+                  appLogger.logger[logOption.toString()](
+                    `Email sending error with MailGun || Invited by: ${assignedList.inviter.name}<${assignedList.inviter.email}> || errored invitees: ${erroredInvitees}`
+                  );
+                } else {
+                  console.log("Email sent!");
+                }
+              });
             }
             if (index === assignedList.invitees.length - 1) {
               if (erroredInvitees.length > 0) {
@@ -128,7 +149,6 @@ app.post("/api/activity/organize", function (req, res) {
                 res.json({
                   status: "sent",
                   success: true,
-                  assignedList: assignedList,
                 });
               }
             }
