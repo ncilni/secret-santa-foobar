@@ -142,11 +142,14 @@ a:focus {
   z-index: 1;
 }
 .top-banner h2 {
+  margin-top: 50px;
   font-size: 80px;
   line-height: 80px;
   margin: 0;
 }
 .top-banner h1 {
+  margin-top: 40px;
+  font-family: "Pacifico", cursive;
   font-size: 100px;
   z-index: 4;
   font-weight: bold;
@@ -169,10 +172,13 @@ a:focus {
   height: auto;
   z-index: -1;
 }
+.top-banner a {
+  margin-top: 100px;
+}
 
 /*=====  End of top banner  ======*/
 /*=================================
-=            hot offer            =
+=            organize evnt            =
 =================================*/
 .hot-offer {
   height: 100%;
@@ -256,149 +262,6 @@ a:focus {
   margin: 20px 0;
   padding-left: 20px;
   padding-right: 20px;
-}
-
-/*=====  End of hot offer  ======*/
-/*===============================
-=            product            =
-===============================*/
-#product-section-1,
-#product-section-3 {
-  background-color: #b01c1c;
-  background-size: cover;
-  color: #ffffff;
-  padding-bottom: 220px;
-  position: relative;
-  z-index: 1;
-}
-#product-section-1 .section__heading,
-#product-section-3 .section__heading {
-  color: #ffffff;
-}
-
-.section-product figure {
-  overflow: hidden;
-  position: relative;
-}
-.section-product figure:hover .section-product__content {
-  bottom: 0;
-  opacity: 1;
-  -webkit-transition: 0.3s linear all;
-  -moz-transition: 0.3s linear all;
-  -ms-transition: 0.3s linear all;
-  -o-transition: 0.3s linear all;
-  transition: 0.3s linear all;
-  visibility: visible;
-}
-.section-product figure img {
-  width: auto !important;
-  margin: 0 auto;
-  display: bloack;
-}
-.section-product__content {
-  background-color: #fff;
-  bottom: -200px;
-  color: #000;
-  left: 0;
-  opacity: 0;
-  padding: 20px 10px;
-  position: absolute;
-  right: 0;
-  -webkit-transition: 0.3s linear all;
-  -moz-transition: 0.3s linear all;
-  -ms-transition: 0.3s linear all;
-  -o-transition: 0.3s linear all;
-  transition: 0.3s linear all;
-  visibility: hidden;
-}
-.section-product__content h3 {
-  font-size: 22px;
-  font-weight: bold;
-  line-height: 22px;
-  margin: 0;
-  text-transform: capitalize;
-}
-.section-product__content p {
-  color: #b01c1c;
-  font-size: 30px;
-  font-weight: bold;
-  line-height: 30px;
-  margin: 25px 0;
-}
-.section-product__content .button {
-  font-size: 16px;
-  padding: 9px 40px;
-}
-
-/*=====  End of product  ======*/
-/*==================================
-=            contact us            =
-==================================*/
-.contact-us {
-  background-color: #ffffff;
-}
-/* .hot-offer .form-control {
-  background-color: transparent;
-  border: 1px solid #dddddd;
-  color: #777777;
-  padding: 16px 20px;
-  border-radius: 40px;
-  font-size: 14px;
-} */
-.contact-us .form-control:focus {
-  box-shadow: none;
-}
-.contact-us__address-text {
-  font-weight: normal;
-}
-.contact-us__column ul li {
-  margin-top: 4px;
-  font-weight: bold;
-}
-.contact-us__column figure {
-  width: 64px;
-}
-.contact-us__column ul {
-  width: calc(100% - 84px);
-  margin-left: 20px;
-}
-.contact-us ::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #777777;
-  opacity: 1;
-  /* Firefox */
-}
-.contact-us :-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: #777777;
-}
-.contact-us ::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: #777777;
-}
-.contact-us__social-list li a {
-  border-radius: 50%;
-  border: 2px solid #b01c1c;
-  color: #b01c1c;
-  display: inline-block;
-  font-size: 20px;
-  height: 50px;
-  line-height: 50px;
-  -webkit-transition: 0.3s linear all;
-  -moz-transition: 0.3s linear all;
-  -ms-transition: 0.3s linear all;
-  -o-transition: 0.3s linear all;
-  transition: 0.3s linear all;
-  width: 50px;
-}
-.contact-us__social-list li a:hover {
-  background-color: #b01c1c;
-  color: #ffffff;
-  -webkit-transition: 0.3s linear all;
-  -moz-transition: 0.3s linear all;
-  -ms-transition: 0.3s linear all;
-  -o-transition: 0.3s linear all;
-  transition: 0.3s linear all;
 }
 
 /*=====  End of contact us  ======*/
@@ -506,10 +369,11 @@ a:focus {
     line-height: 34px;
   }
   .top-banner h1 {
-    font-size: 100px;
+    font-size: 60px;
     line-height: 100px;
   }
   .top-banner h2 {
+    margin-top: 120px !important;
     font-size: 44px;
     line-height: 44px;
   }
