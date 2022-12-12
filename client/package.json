@@ -28,7 +28,7 @@
     "angular-particle": "^1.0.4",
     "body-parser": "^1.19.0",
     "core-js": "^2.5.4",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "mongodb": "^3.5.7",
     "mongoose": "^5.9.15",
     "nconf": "^0.10.0",
